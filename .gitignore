@@ -6,6 +6,13 @@ __pycache__/
 # C extensions
 *.so
 
+# Cache (local)
+.DS_Store
+__MACOSX/
+Thumbs.db
+.idea/
+.vscode/
+
 # Distribution / packaging
 .Python
 build/
