@@ -1,12 +1,14 @@
 table {
     border-collapse: collapse;
     width: 100%;
+    margin-bottom: 10px;
 }
 
 table,
 th,
 td {
     border: 1px solid black;
+    text-align: center;
 }
 
 th {
@@ -15,5 +17,5 @@ th {
 }
 
 tr.data-row {
-    display: none;
+    display: grid;
 }
