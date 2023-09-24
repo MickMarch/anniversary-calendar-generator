@@ -13,7 +13,8 @@ const currentMonth = currentDate.getMonth();
 const currentDay = currentDate.getDay();
 const newRowButtonID = "new-row-button";
 
-var indexCounter = 1;
+var rowCounter = 0;
+var indexCounter = 0;
 
 function generateResult(eventType, subjectName, dateValue) {
     if (!subjectName || !dateValue) {
@@ -27,18 +28,19 @@ function generateResult(eventType, subjectName, dateValue) {
     };
 };
 
-function deleteRow(row) {
+function destroyRow(row) {
     let rowIndex = row.rowIndex;
-    alert(`TODO - Delete Row at index ${rowIndex}`)
+    row.remove()
+    --indexCounter
 }
 
 // Function that creates rows
 function createRow(table) {
-    let colAID = `event-dropdown-0${indexCounter}`
-    let colBID = `subject-name-field-0${indexCounter}`
-    let colCID = `calendar-0${indexCounter}`
-    let colDID = `preview-0${indexCounter}`
-    let colEID = `delete-button-0${indexCounter}`
+    let eventTypeID = `event-dropdown-0${rowCounter}`
+    let subjectNameID = `subject-name-field-0${rowCounter}`
+    let calendarID = `calendar-0${rowCounter}`
+    let previewID = `preview-0${rowCounter}`
+    let deleteButtonID = `delete-button-0${rowCounter}`
     let row = table.insertRow(indexCounter);
     let eventCell = row.insertCell(0);
     let subjectCell = row.insertCell(1);
@@ -47,7 +49,7 @@ function createRow(table) {
     let deleteCell = row.insertCell(4)
 
     let eventDropdown = document.createElement('select');
-    eventDropdown.id = colAID;
+    eventDropdown.id = eventTypeID;
     for (var i = 0; i < eventDropdownOptions.length; i++) {
         var option = document.createElement('option');
         option.text = eventDropdownOptions[i];
@@ -55,22 +57,23 @@ function createRow(table) {
     };
 
     let subjectInput = document.createElement('input');
-    subjectInput.id = colBID
+    subjectInput.id = subjectNameID
     subjectInput.type = 'type';
     subjectInput.placeholder = 'Enter Event Subject';
 
     let calendarContainer = document.createElement('div');
-    // calendarContainer.id = colCID
+    calendarContainer.id = `container-${calendarID}`
     let calendarInput = document.createElement('input')
-    calendarInput.id = colCID
+    calendarInput.id = `input-${calendarID}`
     calendarInput.type = 'text';
     calendarContainer.appendChild(calendarInput)
     let calendar = jSuites.calendar(calendarInput, {
         format: 'YYYY/MM/DD'
     })
+    calendar.id = calendarID
 
     let previewItem = document.createElement("p")
-    previewItem.id = colDID
+    previewItem.id = previewID
 
     row.addEventListener("change", function () {
         let date = calendar.getValue()
@@ -94,9 +97,9 @@ function createRow(table) {
     let deleteButtonContainer = document.createElement("div")
     let deleteButton = document.createElement("button")
     deleteButtonContainer.appendChild(deleteButton)
-    deleteButton.id = colEID
+    deleteButton.id = deleteButtonID
     deleteButton.textContent = "Delete Row!"
-    deleteButton.addEventListener("click", function () { deleteRow(row) })
+    deleteButton.addEventListener("click", function () { destroyRow(row) })
 
 
 
@@ -106,7 +109,8 @@ function createRow(table) {
     previewCell.appendChild(previewItem)
     deleteCell.appendChild(deleteButtonContainer)
 
-    indexCounter = indexCounter + 1
+    ++rowCounter
+    ++indexCounter
 }
 
 
@@ -115,27 +119,28 @@ document.addEventListener("DOMContentLoaded", function () {
     const table = document.createElement("table");
     table.id = "events-table";
     const tableHeaders = document.createElement("thead");
-    const tableBody = document.createElement("tbody");
     tableHeaders.id = 'events-table-headers';
     tableHeaders.innerHTML = `
-        <tr>
-            <th>${columnAHeader}</th>
-            <th>${columnBHeader}</th>
-            <th>${columnCHeader}</th>
-            <th>${columnDHeader}</th>
-            <th>${columnEHeader}</th>
-        </tr>
+    <tr>
+    <th>${columnAHeader}</th>
+    <th>${columnBHeader}</th>
+    <th>${columnCHeader}</th>
+    <th>${columnDHeader}</th>
+    <th>${columnEHeader}</th>
+    </tr>
     `;
+    const tableBody = document.createElement("tbody");
+    tableBody.id = 'events-table-body';
     tableContainer.appendChild(table)
     table.appendChild(tableHeaders)
     table.appendChild(tableBody)
-    createRow(table)
+    createRow(tableBody)
 
     const newRowButtonContainer = document.getElementById("new-row-button-container");
     const newRowButton = document.createElement("button");
     newRowButton.id = newRowButtonID;
     newRowButton.textContent = "New Entry";
-    newRowButton.addEventListener("click", function () { createRow(table) });
+    newRowButton.addEventListener("click", function () { createRow(tableBody) });
     newRowButtonContainer.appendChild(newRowButton);
 
 
