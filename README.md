@@ -25,12 +25,12 @@ The purpose of this project is to create a simple to use webpage that can export
   - Event Type dropdown [Birthday / Anniversary]
   - Subject Field
   - jSuites Calendar plugin field
-  - Preview Field
-  - Delete Row Button
+  - Preview Field (which displays the event title template)
+  - Delete Row Button (which work)
 
 - There is a new row button that adds new rows
+- There is an Export Calendar Events button (not working yet)
 
 ### TODO
 
-- Delete button needs to actually delete row
 - Export all completed fields to ICS file that can be downloaded

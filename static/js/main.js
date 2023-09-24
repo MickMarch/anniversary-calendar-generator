@@ -4,27 +4,24 @@ console.log("Working");
 const columnAHeader = 'Event Type';
 const columnBHeader = 'Subject Name';
 const columnCHeader = 'Est. Date';
-const columnDHeader = 'Preview';
+const columnDHeader = 'Calendar Title Preview';
 const columnEHeader = "Remove Row?";
 const eventDropdownOptions = ["Birthday", "Anniversary"];
-const currentDate = new Date();
-const currentYear = currentDate.getFullYear();
-const currentMonth = currentDate.getMonth();
-const currentDay = currentDate.getDay();
 const newRowButtonID = "new-row-button";
+const exportToICSButtonID = "export-to-ics-button";
 
 var rowCounter = 0;
 var indexCounter = 0;
 
 function generateResult(eventType, subjectName, dateValue) {
     if (!subjectName || !dateValue) {
-        return 'Please enter Subject and Date field';
+        return 'N/A';
     }
     else if (eventType === "Birthday") {
-        return `${subjectName}'s ${eventType} - ${dateValue}`;
+        return `${subjectName}'s ${eventType} (x Years)`;
     }
     else if (eventType === "Anniversary") {
-        return `${subjectName} ${eventType} - ${dateValue}`;
+        return `${subjectName} ${eventType} (x Years)`;
     };
 };
 
@@ -101,8 +98,6 @@ function createRow(table) {
     deleteButton.textContent = "Delete Row!"
     deleteButton.addEventListener("click", function () { destroyRow(row) })
 
-
-
     dateCell.appendChild(calendarContainer)
     eventCell.appendChild(eventDropdown)
     subjectCell.appendChild(subjectInput)
@@ -111,6 +106,18 @@ function createRow(table) {
 
     ++rowCounter
     ++indexCounter
+}
+
+function parseRows() {
+    // This will go through each existing row and gather the information into an Object
+}
+
+function cleanParsedRows(parsedRows) {
+    // This will clean up any empty/incomplete rows. This will also remove any duplicate rows
+}
+
+function exportToICS() {
+    alert("TODO - Export to ICS")
 }
 
 
@@ -143,8 +150,12 @@ document.addEventListener("DOMContentLoaded", function () {
     newRowButton.addEventListener("click", function () { createRow(tableBody) });
     newRowButtonContainer.appendChild(newRowButton);
 
-
-
+    const exportToICSButtonContainer = document.getElementById("export-to-ics-button-container");
+    const exportToICSButton = document.createElement("button");
+    exportToICSButton.id = exportToICSButtonID
+    exportToICSButton.textContent = "Export Calendar Events";
+    exportToICSButton.addEventListener("click", function () { exportToICS() })
+    exportToICSButtonContainer.appendChild(exportToICSButton)
 
 
 })

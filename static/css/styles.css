@@ -19,3 +19,7 @@ th {
 tr.data-row {
     display: grid;
 }
+
+button {
+    margin-bottom: 10px;
+}
