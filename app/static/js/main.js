@@ -52,14 +52,17 @@ function createRow(table) {
     subjectInput.placeholder = 'Enter Event Subject';
 
     let calendarContainer = document.createElement('div');
-    calendarContainer.id = colCID
-    // calendarContainer.type = 'text';
-    console.log('hi')
-    let calendar = jSuites.calendar(calendarContainer, {
+    // calendarContainer.id = colCID
+    let calendarInput = document.createElement('input')
+    calendarInput.id = colCID
+    calendarInput.type = 'text';
+    calendarContainer.appendChild(calendarInput)
+    let calendar = jSuites.calendar(calendarInput, {
         format: 'YYYY/MM/DD'
     })
 
     let previewItem = document.createElement("plaintext")
+    previewItem.id = colDID
 
     row.addEventListener("change", function () {
         let date = calendar.getValue()
