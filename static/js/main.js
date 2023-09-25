@@ -1,27 +1,32 @@
 console.log("Working");
 
+// Import Dependencies
+// import * as ICS from 'ics-js'
+
 // Variable Creations
-const columnAHeader = 'Event Type';
-const columnBHeader = 'Subject Name';
-const columnCHeader = 'Est. Date';
-const columnDHeader = 'Calendar Title Preview';
-const columnEHeader = "Remove Row?";
+const eventTypeHeader = 'Event Type';
+const subjectNameHeader = 'Subject Name';
+const calendarHeader = 'Est. Date';
+const previewHeader = 'Calendar Title Preview';
+const removeRowHeader = "Remove Row?";
+const occurrencesHeader = "# of Occurrences from Today"
 const eventDropdownOptions = ["Birthday", "Anniversary"];
 const newRowButtonID = "new-row-button";
 const exportToICSButtonID = "export-to-ics-button";
 
+var eventData = {}
 var rowCounter = 0;
 var indexCounter = 0;
 
-function generateResult(eventType, subjectName, dateValue) {
+function generateResult(eventType, subjectName, dateValue, occValue) {
     if (!subjectName || !dateValue) {
         return 'N/A';
     }
     else if (eventType === "Birthday") {
-        return `${subjectName}'s ${eventType} (x Years)`;
+        return `${subjectName}'s ${eventType} (Age Here) x${occValue}`;
     }
     else if (eventType === "Anniversary") {
-        return `${subjectName} ${eventType} (x Years)`;
+        return `${subjectName} ${eventType} (Amt of Years Here) x${occValue}`;
     };
 };
 
@@ -33,17 +38,22 @@ function destroyRow(row) {
 
 // Function that creates rows
 function createRow(table) {
-    let eventTypeID = `event-dropdown-0${rowCounter}`
-    let subjectNameID = `subject-name-field-0${rowCounter}`
-    let calendarID = `calendar-0${rowCounter}`
-    let previewID = `preview-0${rowCounter}`
-    let deleteButtonID = `delete-button-0${rowCounter}`
+    let rowRef = rowCounter
+    let eventDataID = `event-${rowRef}`
+    eventData[eventDataID] = {}
+    let eventTypeID = `event-dropdown-0${rowRef}`
+    let subjectNameID = `subject-name-input-0${rowRef}`
+    let calendarID = `calendar-0${rowRef}`
+    let occDropdownID = `occ-dropdown-0${rowRef}`
+    let previewID = `preview-0${rowRef}`
+    let deleteButtonID = `delete-button-0${rowRef}`
     let row = table.insertRow(indexCounter);
     let eventCell = row.insertCell(0);
     let subjectCell = row.insertCell(1);
     let dateCell = row.insertCell(2);
-    let previewCell = row.insertCell(3)
-    let deleteCell = row.insertCell(4)
+    let occCell = row.insertCell(3)
+    let previewCell = row.insertCell(4)
+    let deleteCell = row.insertCell(5)
 
     let eventDropdown = document.createElement('select');
     eventDropdown.id = eventTypeID;
@@ -69,25 +79,45 @@ function createRow(table) {
     })
     calendar.id = calendarID
 
+    let occDropdown = document.createElement('select')
+    occDropdown.id = occDropdownID
+    for (var i = 1; i <= 100; i++) {
+        var option = document.createElement('option');
+        option.text = i.toString();
+        occDropdown.appendChild(option)
+    };
+    occDropdown.value = 50
+
     let previewItem = document.createElement("p")
     previewItem.id = previewID
 
     row.addEventListener("change", function () {
         let date = calendar.getValue()
         let dateValue = date.toString().slice(0, 10)
+        eventData[eventDataID]['date'] = date
+        eventData[eventDataID]['eventType'] = eventDropdown.value
+        eventData[eventDataID]['subjectName'] = subjectInput.value
+        eventData[eventDataID]['occurrences'] = occDropdown.value
+
         previewItem.textContent = generateResult(
             eventDropdown.value,
             subjectInput.value,
-            dateValue
+            dateValue,
+            occDropdown.value
         )
     })
     calendarContainer.addEventListener("click", function () {
         let date = calendar.getValue()
         let dateValue = date.toString().slice(0, 10)
+        eventData[eventDataID]['date'] = date
+        eventData[eventDataID]['eventType'] = eventDropdown.value
+        eventData[eventDataID]['subjectName'] = subjectInput.value
+        eventData[eventDataID]['occurrences'] = occDropdown.value
         previewItem.textContent = generateResult(
             eventDropdown.value,
             subjectInput.value,
-            dateValue
+            dateValue,
+            occDropdown.value
         )
     })
 
@@ -101,6 +131,7 @@ function createRow(table) {
     dateCell.appendChild(calendarContainer)
     eventCell.appendChild(eventDropdown)
     subjectCell.appendChild(subjectInput)
+    occCell.appendChild(occDropdown)
     previewCell.appendChild(previewItem)
     deleteCell.appendChild(deleteButtonContainer)
 
@@ -108,16 +139,9 @@ function createRow(table) {
     ++indexCounter
 }
 
-function parseRows() {
-    // This will go through each existing row and gather the information into an Object
-}
-
-function cleanParsedRows(parsedRows) {
-    // This will clean up any empty/incomplete rows. This will also remove any duplicate rows
-}
-
-function exportToICS() {
+function exportToICS(table) {
     alert("TODO - Export to ICS")
+    console.log(eventData)
 }
 
 
@@ -129,11 +153,12 @@ document.addEventListener("DOMContentLoaded", function () {
     tableHeaders.id = 'events-table-headers';
     tableHeaders.innerHTML = `
     <tr>
-    <th>${columnAHeader}</th>
-    <th>${columnBHeader}</th>
-    <th>${columnCHeader}</th>
-    <th>${columnDHeader}</th>
-    <th>${columnEHeader}</th>
+        <th>${eventTypeHeader}</th>
+        <th>${subjectNameHeader}</th>
+        <th>${calendarHeader}</th>
+        <th>${occurrencesHeader}</th>
+        <th>${previewHeader}</th>
+        <th>${removeRowHeader}</th>
     </tr>
     `;
     const tableBody = document.createElement("tbody");
@@ -154,7 +179,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const exportToICSButton = document.createElement("button");
     exportToICSButton.id = exportToICSButtonID
     exportToICSButton.textContent = "Export Calendar Events";
-    exportToICSButton.addEventListener("click", function () { exportToICS() })
+    exportToICSButton.addEventListener("click", function () { exportToICS(tableBody) })
     exportToICSButtonContainer.appendChild(exportToICSButton)
 
 
